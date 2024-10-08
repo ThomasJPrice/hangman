@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hangman</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
+</head>
+
+<body>
+  <div class="container">
+    <!-- <h1>Welcome to Hangman</h1> -->
+
+    <!-- game -->
+    <div id="game">
+      <!-- active image -->
+      <img id="active-image" src="{{ url_for('static', filename='images/1-stage.png')}}" alt="hangman">
+
+      <!-- underlines -->
+      <div id="underlines" class="empty-underlines">
+      </div>
+
+      <!-- keyboard -->
+      <div class="" id="keyboard">
+        <p class="letters--header">Choose a letter:</p>
+
+        <div id="letters">
+
+        </div>
+      </div>
+
+      <!-- lose message -->
+      <div id="lose--message" class="invisible">
+        <p class="letters--header">You lose! The word was {{ word }}!</p>
+
+        <button onclick="location.reload()">Play again</button>
+      </div>
+
+      <div id="win--message" class="invisible">
+        <p class="letters--header">You win! Well done!</p>
+
+        <button onclick="location.reload()">Play again</button>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+  const word = `{{ word }}`.split('')
+  const alphabet = [
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+  ];
+  var imageStage = 1
+
+
+  var currLetters = []
+  word.forEach((value) => {
+    currLetters.push('')
+  })
+  renderLetters(currLetters)
+
+  // setting up keyboard
+  const letters = document.getElementById('letters')
+
+  alphabet.forEach((value) => {
+    var temp = document.createElement('span')
+    temp.innerText = value
+    temp.className = 'letter'
+    temp.ariaValueText = `letter-${value}`
+    temp.onclick = () => handleLetterClick(value)
+
+    letters.append(temp)
+  })
+
+  function updateImage() {
+    var filename = `images/${imageStage}-stage.png`
+    var src = `/static/${filename}`
+
+    document.getElementById('active-image').src = src
+  }
+
+  function renderLetters(currLetters) {
+    const underlines = document.getElementById('underlines')
+    underlines.innerHTML = ''
+
+    for (let i = 0; i < currLetters.length; i++) {
+      var temp = document.createElement('div')
+
+      if (currLetters[i] === '') {
+        temp.className = 'underline space'
+        underlines.append(temp)
+      } else {
+        underlines.classList.remove('empty-underlines')
+
+        temp.className = 'space correct-letter'
+        temp.innerText = currLetters[i]
+        underlines.append(temp)
+      }
+
+      underlines.append(temp)
+    }
+  }
+
+  function handleLetterClick(letter) {
+    var foundIndexes = []
+    var letterElem = null
+
+    for (let item of letters.children) {
+      if (letter === item.innerText) {
+        letterElem = item
+      }
+    }
+
+    word.forEach((value, index) => {
+      if (value === letter.toLowerCase()) {
+        foundIndexes.push(index)
+      }
+    })
+
+    letterElem.onclick = () => { }
+
+    if (foundIndexes.length === 0) {
+      letterElem.classList.add('letter-wrong')
+
+      imageStage = imageStage + 1
+
+      if (imageStage === 8) {
+        // loss
+        document.getElementById('keyboard').classList.add('invisible')
+        document.getElementById('lose--message').classList.remove('invisible')
+      }
+
+      updateImage()
+      return
+    }
+
+    letterElem.classList.add('letter-right')
+
+    foundIndexes.forEach((value) => {
+      currLetters[value] = letter.toLowerCase()
+    })
+
+    renderLetters(currLetters)
+
+
+    if (currLetters.filter((x) => x === '').length === 0) {
+      // win
+      document.getElementById('keyboard').classList.add('invisible')
+      document.getElementById('win--message').classList.remove('invisible')
+    }
+
+  }
+
+</script>
+
+</html>
