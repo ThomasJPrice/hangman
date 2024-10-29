@@ -8,7 +8,7 @@
 }
 
 .container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding-top: 16px;
   padding: 16px 16px 0 16px;
@@ -69,6 +69,8 @@ h1 {
   display: grid;
   grid-template-columns: repeat(13, 1fr);
   grid-gap: 8px;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .letter {

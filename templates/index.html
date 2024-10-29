@@ -47,7 +47,7 @@
 </body>
 
 <script>
-  const word = `{{ word }}`.split('')
+  const word = `{{ word }}`.replace(' ', "\\").split('')
   const alphabet = [
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
     'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
@@ -57,8 +57,14 @@
 
   var currLetters = []
   word.forEach((value) => {
-    currLetters.push('')
+    if (alphabet.find((item) => item === value.toUpperCase())) {
+      currLetters.push('')
+    } else {
+      currLetters.push(value)
+    }
   })
+  console.log(currLetters);
+  
   renderLetters(currLetters)
 
   // setting up keyboard

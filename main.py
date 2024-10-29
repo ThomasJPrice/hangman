@@ -1,22 +1,17 @@
 from flask import Flask, render_template
 import random
+import pandas as pd
 
 app=Flask(__name__)
 
-WORDS = [
-    "giraffe", "umbrella", "jungle", "computer", "science", 
-    "ocean", "mountain", "elephant", "chocolate", "invisible", 
-    "dynamic", "horizon", "pyramid", "balloon", "whisper", 
-    "marathon", "crystal", "adventure", "festival", "library", 
-    "mystical", "thunder", "jigsaw", "umbrella", "happiness", 
-    "notebook", "chameleon", "acoustic", "discover", "journey", 
-    "puzzle", "octopus", "freedom", "velocity", "whistle", 
-    "quantum", "laptop", "telescope", "fantasy", "network", 
-    "sapphire", "galaxy", "tornado", "lantern", "magnet", 
-    "dragonfly", "symphony", "computer", "pancake", "trolley"
-]
+df = pd.read_csv('static/WordList.csv', header=None)
+dfArr = df[0].to_list()
 
+WORDS = []
 
+for i in dfArr:
+  WORDS.append(i.lower())
+  
 @app.route('/')
 def home():
   active_word = random.choice(WORDS)
